@@ -15,8 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
     // 创建一个任务队列
     const queue = selections.map((selection) => async () => {
       const selectedText = document.getText(selection).trim()
-      const currentFileDir = document.uri.fsPath
-      const basePath = currentFileDir.substring(0, currentFileDir.lastIndexOf('/'))
+      const basePath = document.uri.fsPath.replace(path.basename(document.uri.fsPath), '')
       const absolutePath = path.join(basePath, selectedText)
       try {
         const url = await uploader.uploadImage(absolutePath)
