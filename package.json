@@ -11,6 +11,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/wenyikun/pic-fly.git"
+  },
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
