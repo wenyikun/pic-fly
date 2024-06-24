@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Canvas 裁剪图片成圆形</title>
+</head>
+
+<body>
+  <canvas id="canvas" width="256" height="256"></canvas>
+  <script>
+    // 选择 Canvas 元素
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // 创建一个图片对象
+    const img = new Image();
+    img.src = './res/logo.jpeg'; // 替换为你的图片路径
+
+    // 当图片加载完成后
+    img.onload = function () {
+      // 计算圆的中心和半径
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(canvas.width, canvas.height) / 2;
+
+      // 保存当前绘图状态
+      ctx.save();
+
+      // 开始路径，定义一个圆形
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+      ctx.clip(); // 设置剪裁区域
+
+      // 绘制图片，居中显示
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 恢复之前保存的绘图状态
+      ctx.restore();
+    };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+{
+  "name": "pic-fly",
+  "displayName": "Pic Fly",
+  "description": "一个功能强大的 VSCode 图床插件，支持腾讯云 COS、阿里云 OSS、七牛云 Kodo、Cloudflare R2 等多种云存储服务。插件正在持续更新和优化中，致力于为用户提供更便捷的图片管理和上传体验。",
+  "version": "0.0.1",
+  "publisher": "wenyikun",
+  "icon": "res/logo.png",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pic-fly.selection-upload",
+        "title": "☁️ 文件路径上传"
+      },
+      {
+        "command": "pic-fly.clipboard-upload",
+        "title": "☁️ 从剪贴板上传"
+      },
+      {
+        "command": "pic-fly.open-dialog-upload",
+        "title": "☁️ 从文件夹上传"
+      },
+      {
+        "command": "pic-fly.explorer-file-upload",
+        "title": "☁️ 文件上传"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "pic-fly.selection-upload",
+          "group": "PicFly",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "pic-fly.clipboard-upload",
+          "group": "PicFly"
+        },
+        {
+          "command": "pic-fly.open-dialog-upload",
+          "group": "PicFly"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "pic-fly.explorer-file-upload",
+          "when": "resourceScheme == file",
+          "group": "PicFly"
+        },
+        {
+          "command": "pic-fly.open-dialog-upload",
+          "group": "PicFly"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PicFly",
+      "properties": {
+        "pic-fly.type": {
+          "type": "string",
+          "description": "选择您想要使用的图床类型。",
+          "enum": [
+            "腾讯云 COS",
+            "阿里云 OSS",
+            "七牛云 Kodo",
+            "Cloudflare R2"
+          ],
+          "default": "腾讯云 COS",
+          "order": 0
+        },
+        "pic-fly.bucket": {
+          "type": "string",
+          "description": "存储桶的名称。",
+          "default": "",
+          "required": true,
+          "order": 1
+        },
+        "pic-fly.accessKeyId": {
+          "type": "string",
+          "description": "访问密钥 ID。",
+          "default": "",
+          "required": true,
+          "order": 2
+        },
+        "pic-fly.accessKeySecret": {
+          "type": "string",
+          "description": "访问密钥密钥。",
+          "default": "",
+          "required": true,
+          "order": 3
+        },
+        "pic-fly.accountId": {
+          "type": "string",
+          "description": "账户 ID（Cloudflare R2必填）",
+          "default": "",
+          "required": true,
+          "order": 4
+        },
+        "pic-fly.regionId": {
+          "type": "string",
+          "markdownDescription": "**存储区域 ID，例如：ap-guangzhou、oss-cn-shanghai。（Cloudflare R2非必填）**\n- [腾讯云 COS区域对照表 →](https://cloud.tencent.com/document/product/436/6224)\n- [阿里云 OSS区域对照表 →](https://help.aliyun.com/zh/oss/user-guide/regions-and-endpoints)\n- [七牛云 Kodo区域对照表 →](https://developer.qiniu.com/kodo/1671/region-endpoint-fq)",
+          "default": "",
+          "required": true,
+          "order": 5
+        },
+        "pic-fly.customDomain": {
+          "type": "string",
+          "description": "自定义域名，用于替换默认的存储服务域名。",
+          "default": "",
+          "order": 6
+        },
+        "pic-fly.uploadPath": {
+          "type": "string",
+          "markdownDescription": "**上传路径和文件名的规则**\n\n使用以下占位符来自定义上传路径和文件名：\n\n- **`{filename}`**: 原文件名，不包含扩展名\n- **`{ext}`**: 文件扩展名（带点，如 `.jpg`）\n- **`{timestamp}`**: 当前时间戳\n- **`{date}`**: 当前日期，格式为 `YYYY-MM-DD`\n- **`{time}`**: 当前时间，格式为 `HH-MM-SS`\n- **`{year}`**: 当前年份\n- **`{month}`**: 当前月份\n- **`{day}`**: 当前日\n- **`{hour}`**: 当前小时\n- **`{minute}`**: 当前分钟\n- **`{second}`**: 当前秒\n- **`{uuid}`**: 生成一个唯一标识符（UUID）\n- **`{random}`**: 生成一个随机字符串\n\n示例：\n`pic-fly/{filename}-{timestamp}{ext}` -> `pic-fly/image-1718791567029.png`",
+          "default": "pic-fly/{filename}-{timestamp}{ext}",
+          "order": 7
+        },
+        "pic-fly.enableCompression": {
+          "type": "boolean",
+          "description": "是否启用图片压缩。（预留）",
+          "default": false,
+          "order": 8
+        },
+        "pic-fly.compressionQuality": {
+          "type": "number",
+          "description": "图片压缩质量，范围 0 到 100。（预留）",
+          "default": 80,
+          "minimum": 0,
+          "maximum": 100,
+          "order": 9
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/ali-oss": "^6.16.11",
+    "@types/mime-types": "^2.1.4",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "eslint": "^8.57.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.600.0",
+    "ali-oss": "^6.20.0",
+    "cos-nodejs-sdk-v5": "^2.14.1",
+    "electron-clipboard-ex": "^1.3.3",
+    "mime-types": "^2.1.35",
+    "qiniu": "^7.12.0"
+  }
+}
